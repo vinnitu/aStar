@@ -151,6 +151,9 @@ run = function(startLocation, destination, environment) {
   currentLocation = {};
   while (!sameLocation(currentLocation, destination)) {
     currentLocation = findLocationWithLowestFCost(openList);
+    if (!currentLocation) {
+      break;
+    }
     openList = removeLocationFrom(openList, currentLocation);
     closedList.push(currentLocation);
     adjacentLocations = getAdjacentLocations(currentLocation, environment, destination);
