@@ -162,6 +162,9 @@ run = function(startLocation, destination, environment) {
       openList = updateOpenList(openList, location, closedList);
     }
   }
+  if (!currentLocation) {
+    return [];
+  }
   return closedList;
 };
 
