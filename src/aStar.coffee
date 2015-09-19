@@ -77,6 +77,7 @@ run = (startLocation, destination, environment) ->
   currentLocation = {} # updated and compared with the destination on each iteration
   while not sameLocation currentLocation, destination
     currentLocation = findLocationWithLowestFCost openList
+    break if not currentLocation
     openList = removeLocationFrom openList, currentLocation
     closedList.push currentLocation
     adjacentLocations = getAdjacentLocations currentLocation, environment, destination
