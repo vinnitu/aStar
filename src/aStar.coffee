@@ -83,6 +83,7 @@ run = (startLocation, destination, environment) ->
     adjacentLocations = getAdjacentLocations currentLocation, environment, destination
     for location in adjacentLocations
       openList = updateOpenList openList, location, closedList
+  return [] if not currentLocation
   return closedList
 
 module.exports =
