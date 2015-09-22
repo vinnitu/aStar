@@ -18,7 +18,10 @@ environment = {blockedLocations: [{xAxis: 2, yAxis: 1}, {xAxis: 2, yAxis: 2}, {x
 
 Call the run method passing in the parameters defined above:
 
-`aStar.run(startLocation, destination, environment)`
+`aStar.run(startLocation, destination, environment, function(from, to) {
+    // return false; //if cannot move from to
+    return true;
+})`
 
 This returns the following shortest path:
 ```
