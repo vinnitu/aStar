@@ -13,16 +13,19 @@ generateAdjacentLocations = (currentLocation) ->
   adjacentLocations
 
 # receives an array of location objects e.g. [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ] and returns new array of *valid* coordinate objects based on the environment
-validateLocations = (adjacentLocations, environment) ->
+validateLocations = (adjacentLocations, environment, cb, currentLocation) ->
   validLocations = _.filter adjacentLocations, (location) ->
-    withinWorldBoundary location, environment
+    from = x: currentLocation.xAxis, y: currentLocation.yAxis
+    to = x: location.xAxis, y: location.yAxis
+    cb(from, to) and withinWorldBoundary location, environment
+
   if environment.blockedLocations
     validLocations = _.filter validLocations, (location) ->
       not _.find environment.blockedLocations, (blockLocation) -> blockLocation.yAxis == location.yAxis and blockLocation.xAxis == location.xAxis
   validLocations
 
-getAdjacentLocations = (currentLocation, environment, destination) ->
-  adjacentLocations = validateLocations(generateAdjacentLocations(currentLocation), environment)
+getAdjacentLocations = (currentLocation, environment, destination, cb) ->
+  adjacentLocations = validateLocations(generateAdjacentLocations(currentLocation), environment, cb, currentLocation)
   adjacentLocations = _.map adjacentLocations, (location) -> createOpenListLocation(location, currentLocation, destination)
   adjacentLocations
 
@@ -71,7 +74,7 @@ updateOpenList = (openList, location, closedList) ->
       openList.push location
   openList
 
-run = (startLocation, destination, environment) ->
+run = (startLocation, destination, environment, cb) ->
   openList = [createOpenListLocation(startLocation, startLocation, destination)] # coordinates found but not explored yet - init with startLocation
   closedList = [] # coorindates explored which form the shortest path
   currentLocation = {} # updated and compared with the destination on each iteration
@@ -80,7 +83,7 @@ run = (startLocation, destination, environment) ->
     break if not currentLocation
     openList = removeLocationFrom openList, currentLocation
     closedList.push currentLocation
-    adjacentLocations = getAdjacentLocations currentLocation, environment, destination
+    adjacentLocations = getAdjacentLocations currentLocation, environment, destination, cb
     for location in adjacentLocations
       openList = updateOpenList openList, location, closedList
   return [] if not currentLocation
